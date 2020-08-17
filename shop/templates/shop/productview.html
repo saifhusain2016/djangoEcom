@@ -13,6 +13,12 @@
   <body>
     <h1>Product view</h1>
 
+    <ul>
+      {% for product in allProducts %}
+      <li>{{product.productName}}</li>
+      {% endfor %}
+    </ul>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
