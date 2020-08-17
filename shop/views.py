@@ -1,10 +1,19 @@
 from django.shortcuts import render
-
 from .models import Product
-
+from math import ceil
 
 def index(request):
-    return render(request, 'shop/index.html')
+    data = Product.objects.all()
+    count = len(data)
+    slides = count//4 + ceil((count/4) - (count//4))
+    print("count = "+str(count))
+    print("slides = "+str(slides))
+    allProducts = {
+        "allProducts": data,
+        "totalSlides": slides,
+        "slideRange": range(2, slides+1)
+    }
+    return render(request, 'shop/index.html', allProducts)
 
 def aboutus(request):
     return render(request, 'shop/aboutus.html')
