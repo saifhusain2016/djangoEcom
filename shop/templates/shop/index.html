@@ -24,58 +24,66 @@ body .no-padding{
     padding-left:0;
     padding-right:0;
 }
+
 </style>
 {%endblock%}
 
 {%block content%}
-<div id="demo" class="carousel slide" data-ride="carousel">
-    <ul class="carousel-indicators">
-        <li data-target="#demo" data-slide-to="1" class="active"></li>
-        {% for i in slideRange %}
-        <li data-target="#demo" data-slide-to="{{i}}"></li>
-        {% endfor%}
-    </ul>
+<div class="container">
+    {% for data, slides, range in allProducts %}
+    <h1>{{ data.0.category }}</h1>
+    <div id="demo{{ forloop.counter }}" class="carousel slide" data-ride="carousel">
 
-    {% load static %}
-    <div class="container carousel-inner no-padding">
-        <div class="carousel-item active">
-            <div class="col-xs-3 col-sm-3 col-md-3">
-                <div class="card" style="width: 18rem;">
-                    <img src='/media/{{allProducts.0.image}}' class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ allProducts.0.productName}}</h5>
-                        <p class="card-text">{{allProducts.0.description}}</p><br>
-                        <p class="card-text">{{allProducts.0.price}}.00 INR</p>
-                        <a href="#" class="btn btn-primary">Add To Cart</a>
-                    </div>
-                </div>
-            </div>
+        <ul class="carousel-indicators">
+            <li data-target="#demo{{ forloop.counter }}" data-slide-to="1" class="active"></li>
+            {% for i in range %}
+            <li data-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ i }}"></li>
+            {% endfor %}
+        </ul>
 
-            {% for p in allProducts|slice:"1:"%}
+        {% load static %}
+        <div class="container carousel-inner no-padding">
+            <div class="carousel-item active">
                 <div class="col-xs-3 col-sm-3 col-md-3">
-                <div class="card" style="width: 18rem;">
-                    <img src='/media/{{p.image}}' class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ p.productName}}</h5>
-                        <p class="card-text">{{p.description}}</p><br>
-                        <p class="card-text">{{p.price}}.00 INR</p>
-                        <a href="#" class="btn btn-primary">Add To Cart</a>
+                    <div class="card" style="width: 18rem;">
+                        <img src='/media/{{data.0.image}}' class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ data.0.productName}}</h5>
+                            <p class="card-text">{{data.0.description}}</p><br>
+                            <p class="card-text">{{data.0.price}}.00 INR</p>
+                            <a href="#" class="btn btn-primary">Add To Cart</a>
+                        </div>
                     </div>
                 </div>
+
+                {% for p in data|slice:"1:"%}
+                <div class="col-xs-3 col-sm-3 col-md-3">
+                    <div class="card" style="width: 18rem;">
+                        <img src='/media/{{p.image}}' class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ p.productName}}</h5>
+                            <p class="card-text">{{p.description}}</p><br>
+                            <p class="card-text">{{p.price}}.00 INR</p>
+                            <a href="#" class="btn btn-primary">Add To Cart</a>
+                        </div>
+                    </div>
                 </div>
                 {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
-                    </div><div class="carousel-item">
+            </div>
+            <div class="carousel-item">
                 {% endif %}
-            {% endfor%}
+                {% endfor%}
+            </div>
         </div>
-</div>
 
-<a class="carousel-control-prev" href="#demo" data-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-</a>
-<a class="carousel-control-next" href="#demo" data-slide="next">
-    <span class="carousel-control-next-icon"></span>
-</a>
-
-{% endblock %}
+        <a class="carousel-control-prev" href="#demo{{ forloop.counter }}" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#demo{{ forloop.counter }}" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+    <br id="{{forloop.counter}}">
+    {% endfor %}
+    {% endblock %}
 </div>
