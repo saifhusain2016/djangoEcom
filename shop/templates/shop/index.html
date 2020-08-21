@@ -13,6 +13,7 @@
 
 body .carousel-indicator li{
     background-color: blue;
+
 }
 
 body .carousel-control-prev-icon,
@@ -20,10 +21,23 @@ body .carousel-control-next-icon{
     background-color: blue;
 }
 
-body .no-padding{
-    padding-left:0;
-    padding-right:0;
+body .carousel-control-prev,
+body .carousel-control-next{
+    width: 20px;
 }
+
+.carousel-item{
+    width: 94%;
+}
+
+body .no-padding{
+    padding-left:20px;
+    padding-right:20px;
+}
+
+
+
+
 
 </style>
 {%endblock%}
@@ -33,46 +47,47 @@ body .no-padding{
     {% for data, slides, range in allProducts %}
     <h1>{{ data.0.category }}</h1>
     <div id="demo{{ forloop.counter }}" class="carousel slide" data-ride="carousel">
+        <div>
+            <ul class="carousel-indicators">
+                <li data-target="#demo{{ forloop.counter }}" data-slide-to="1" class="active"></li>
+                {% for i in range %}
+                <li data-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ i }}"></li>
+                {% endfor %}
+            </ul>
 
-        <ul class="carousel-indicators">
-            <li data-target="#demo{{ forloop.counter }}" data-slide-to="1" class="active"></li>
-            {% for i in range %}
-            <li data-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ i }}"></li>
-            {% endfor %}
-        </ul>
-
-        {% load static %}
-        <div class="container carousel-inner no-padding">
-            <div class="carousel-item active">
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                    <div class="card" style="width: 18rem;">
-                        <img src='/media/{{data.0.image}}' class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ data.0.productName}}</h5>
-                            <p class="card-text">{{data.0.description}}</p><br>
-                            <p class="card-text">{{data.0.price}}.00 INR</p>
-                            <a href="#" class="btn btn-primary">Add To Cart</a>
+            {% load static %}
+            <div class="container carousel-inner no-padding">
+                <div class="carousel-item active">
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <div class="card" style="width: 18rem;">
+                            <img src='/media/{{data.0.image}}' class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ data.0.productName}}</h5>
+                                <p class="card-text">{{data.0.description}}</p><br>
+                                <p class="card-text">{{data.0.price}}.00 INR</p>
+                                <a href="#" class="btn btn-primary">Add To Cart</a>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {% for p in data|slice:"1:"%}
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                    <div class="card" style="width: 18rem;">
-                        <img src='/media/{{p.image}}' class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ p.productName}}</h5>
-                            <p class="card-text">{{p.description}}</p><br>
-                            <p class="card-text">{{p.price}}.00 INR</p>
-                            <a href="#" class="btn btn-primary">Add To Cart</a>
+                    {% for p in data|slice:"1:"%}
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <div class="card" style="width: 18rem;">
+                            <img src='/media/{{p.image}}' class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ p.productName}}</h5>
+                                <p class="card-text">{{p.description}}</p><br>
+                                <p class="card-text">{{p.price}}.00 INR</p>
+                                <a href="#" class="btn btn-primary">Add To Cart</a>
+                            </div>
                         </div>
                     </div>
+                    {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
                 </div>
-                {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
-            </div>
-            <div class="carousel-item">
-                {% endif %}
-                {% endfor%}
+                <div class="carousel-item">
+                    {% endif %}
+                    {% endfor%}
+                </div>
             </div>
         </div>
 
@@ -82,7 +97,9 @@ body .no-padding{
         <a class="carousel-control-next" href="#demo{{ forloop.counter }}" data-slide="next">
             <span class="carousel-control-next-icon"></span>
         </a>
+
     </div>
+
     <br id="{{forloop.counter}}">
     {% endfor %}
     {% endblock %}

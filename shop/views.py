@@ -6,8 +6,6 @@ from math import ceil
 def index(request):
     data = Product.objects.all()
     category = list(set([i.category for i in data]))
-    print("----------------------------------------")
-    print(category)
     productsByCategory = []
     for c in category:
         p = list(filter(lambda x:x.category == c, data))
