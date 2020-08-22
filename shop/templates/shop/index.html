@@ -7,8 +7,8 @@
 }
 
 .col-md-3 img{
-    width:255px;
-    height:355px;
+    width:170px;
+    height:200px;
 }
 
 body .carousel-indicator li{
@@ -35,6 +35,9 @@ body .no-padding{
     padding-right:20px;
 }
 
+.card{
+padding-left: 37px;
+}
 
 
 
@@ -58,19 +61,7 @@ body .no-padding{
             {% load static %}
             <div class="container carousel-inner no-padding">
                 <div class="carousel-item active">
-                    <div class="col-xs-3 col-sm-3 col-md-3">
-                        <div class="card" style="width: 18rem;">
-                            <img src='/media/{{data.0.image}}' class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ data.0.productName}}</h5>
-                                <p class="card-text">{{data.0.description}}</p><br>
-                                <p class="card-text">{{data.0.price}}.00 INR</p>
-                                <button id="pr{{data.0.id}}" class="btn btn-primary cart">Add To Cart</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% for p in data|slice:"1:"%}
+                    {% for p in data %}
                     <div class="col-xs-3 col-sm-3 col-md-3">
                         <div class="card" style="width: 18rem;">
                             <img src='/media/{{p.image}}' class="card-img-top" alt="...">
@@ -82,7 +73,7 @@ body .no-padding{
                             </div>
                         </div>
                     </div>
-                    {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+                {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
                 </div>
                 <div class="carousel-item">
                     {% endif %}
@@ -113,6 +104,7 @@ body .no-padding{
             var key = "cart";
             var obj = localStorage.getItem(key);
             cart = JSON.parse(obj);
+            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
         }
 
         $(".cart").click(function(){
@@ -124,6 +116,7 @@ body .no-padding{
                 cart[idstr]=1;
             }
             localStorage.setItem("cart", JSON.stringify(cart));
+            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
         });
     </script>
     {% endblock%}
