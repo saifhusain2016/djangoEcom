@@ -65,7 +65,7 @@ body .no-padding{
                                 <h5 class="card-title">{{ data.0.productName}}</h5>
                                 <p class="card-text">{{data.0.description}}</p><br>
                                 <p class="card-text">{{data.0.price}}.00 INR</p>
-                                <a href="#" class="btn btn-primary">Add To Cart</a>
+                                <button id="pr{{data.0.id}}" class="cart" href="#" class="btn btn-primary">Add To Cart</button>
                             </div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ body .no-padding{
                                 <h5 class="card-title">{{ p.productName}}</h5>
                                 <p class="card-text">{{p.description}}</p><br>
                                 <p class="card-text">{{p.price}}.00 INR</p>
-                                <a href="#" class="btn btn-primary">Add To Cart</a>
+                                <button id="pr{{p.id}}" class="cart" href="#" class="btn btn-primary">Add To Cart</button>
                             </div>
                         </div>
                     </div>
@@ -103,4 +103,29 @@ body .no-padding{
     <br id="{{forloop.counter}}">
     {% endfor %}
     {% endblock %}
+
+    {%block js%}
+    <script>
+        if(localStorage.getItem("cart")==null){
+            var cart = {};
+        }
+        else{
+            var key = "cart";
+            var obj = localStorage.getItem(key);
+            cart = JSON.parse(obj);
+        }
+
+        $(".cart").click(function(){
+            var idstr = this.id.toString();
+            if(cart[idstr] && cart[idstr]!=undefined){
+                cart[idstr]=cart[idstr]+1;
+            }
+            else{
+                cart[idstr]=1;
+            }
+            localStorage.setItem("cart", JSON.stringify(cart));
+        });
+    </script>
+    {% endblock%}
+
 </div>
