@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Product
+from .models import Product, Contact
 from math import ceil
 
 def index(request):
@@ -18,6 +18,13 @@ def aboutus(request):
     return render(request, 'shop/aboutus.html')
 
 def contactus(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        query = request.POST.get('query')
+        contact = Contact(name=name, phone=phone, email=email, query=query)
+        contact.save()
     return render(request, 'shop/contactUs.html')
 
 def tracker(request):
