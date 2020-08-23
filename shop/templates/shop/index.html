@@ -39,7 +39,9 @@ body .no-padding{
 padding-left: 37px;
 }
 
-
+.btn-info{
+padding-left:17px;
+}
 
 
 </style>
@@ -67,9 +69,13 @@ padding-left: 37px;
                             <img src='/media/{{p.image}}' class="card-img-top" alt="...">
                             <div class="card-body">
                                 <h5 class="card-title">{{ p.productName}}</h5>
-                                <p class="card-text">{{p.description}}</p><br>
+                                <p class="card-text">{{p.description|slice:"0:20"}}...</p><br>
                                 <p class="card-text">{{p.price}}.00 INR</p>
-                                <button id="pr{{p.id}}" class="btn btn-primary cart">Add To Cart</button>
+                                <button id="pr{{p.id}}" class="btn btn-primary addToCartButton">Add To Cart</button>
+                                <br>
+                                <a href="/shop/products/{{p.id}}">
+                                <button id="qv{{p.id}}" class="btn btn-info cart my-2">Quick View</button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -94,31 +100,5 @@ padding-left: 37px;
     <br id="{{forloop.counter}}">
     {% endfor %}
     {% endblock %}
-
-    {%block js%}
-    <script>
-        if(localStorage.getItem("cart")==null){
-            var cart = {};
-        }
-        else{
-            var key = "cart";
-            var obj = localStorage.getItem(key);
-            cart = JSON.parse(obj);
-            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
-        }
-
-        $(".cart").click(function(){
-            var idstr = this.id.toString();
-            if(cart[idstr] && cart[idstr]!=undefined){
-                cart[idstr]=cart[idstr]+1;
-            }
-            else{
-                cart[idstr]=1;
-            }
-            localStorage.setItem("cart", JSON.stringify(cart));
-            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
-        });
-    </script>
-    {% endblock%}
 
 </div>

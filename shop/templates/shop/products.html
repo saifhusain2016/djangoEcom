@@ -1,0 +1,26 @@
+{% extends './basic.html' %}
+
+{%block title%}About us page{%endblock%}
+
+{% block content%}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <img src="/media/{{selectedProduct.image}}" width="233px" height="385px">
+            </div>
+            <div class="row">
+                <button class="btn btn-primary mx-3">Buy Now</button>
+                <button id=pr{{selectedProduct.id}} class="btn btn-primary addToCartButton">Add To Cart</button>
+            </div>
+        </div>
+        <div class="col-md-8 my-5">
+            <h5>ProductName: {{selectedProduct.productName}}</h5>
+            <p><b>Price: {{selectedProduct.price}} INR.</b></p>
+            <p>Description: {{selectedProduct.description}}</p>
+            <p>QTY: <span id="quantity">0</span></p>
+        </div>
+    </div>
+</div>
+{%endblock%}

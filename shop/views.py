@@ -2,7 +2,6 @@ from django.shortcuts import render
 from .models import Product
 from math import ceil
 
-
 def index(request):
     data = Product.objects.all()
     category = list(set([i.category for i in data]))
@@ -18,26 +17,24 @@ def index(request):
 def aboutus(request):
     return render(request, 'shop/aboutus.html')
 
-
 def contactus(request):
-    return render(request, 'shop/contactus.html')
-
+    return render(request, 'shop/contactUs.html')
 
 def tracker(request):
     return render(request, 'shop/tracker.html')
 
-
-def productview(request):
-    data = Product.objects.all()
-    allProducts = {
-        "allProducts": data
-    }
-    return render(request, 'shop/productview.html', allProducts)
-
+def productview(request, myId):
+    selected = Product.objects.filter(id=myId)
+    return render(request, 'shop/products.html', { "selectedProduct":selected[0] })
 
 def search(request):
     return render(request, 'shop/search.html')
 
-
 def checkout(request):
     return render(request, 'shop/checkout.html')
+
+def home(request):
+    return render(request, '')
+
+def main(request):
+    return render(request, '')
