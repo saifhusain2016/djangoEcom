@@ -12,15 +12,92 @@
             </div>
             <div class="row">
                 <button class="btn btn-primary mx-3">Buy Now</button>
-                <button id=pr{{selectedProduct.id}} class="btn btn-primary addToCartButton">Add To Cart</button>
+                <span id="divpr{{selectedProduct.id}}" class="divpr">
+                     <button id="pr{{selectedProduct.id}}" class="btn btn-primary addToCartButton">Add To Cart</button>
+                </span>
             </div>
         </div>
         <div class="col-md-8 my-5">
             <h5>ProductName: {{selectedProduct.productName}}</h5>
             <p><b>Price: {{selectedProduct.price}} INR.</b></p>
             <p>Description: {{selectedProduct.description}}</p>
-            <p>QTY: <span id="quantity">0</span></p>
+            <p>QTY: <span id="quantity">0</span> </p>
         </div>
     </div>
 </div>
 {%endblock%}
+
+{%block js%}
+<script>
+        if(localStorage.getItem("cart")==null){
+            var cart = {};
+        }
+        else{
+            console.log("cart already present");
+            var key = "cart";
+            var obj = localStorage.getItem(key);
+            cart = JSON.parse(obj);
+            updateCart(cart);
+        }
+
+        $('.divpr').on("click", "button.addToCartButton", function() {
+            console.log("clicked on addtocartbutton");
+            var idstr = this.id.toString();
+            if(cart[idstr] && cart[idstr]!=undefined){
+                cart[idstr]=cart[idstr]+1;
+            }
+            else{
+                cart[idstr]=1;
+            }
+            document.getElementById("cartItems").innerHTML = 1 + parseInt(document.getElementById("cartItems").innerHTML);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCart(cart);
+        });
+
+        function updateCart(cart){
+            item = "pr"+{{ selectedProduct.id }} ;
+                var itemId = "div"+item;
+                if(cart[item]!="0"){
+                    console.log("if passed..");
+                    document.getElementById(itemId).innerHTML = "<button id='val"+item+"' class='btn btn-primary minusButton'>-</button><b> <span id='qty"+item+"' >" + cart[item] + "</span> </b><button id='val"+item+"' class='btn btn-primary plusButton'>+</button>";
+                }
+                else{
+                    document.getElementById(itemId).innerHTML = "<button id='pr{{selectedProduct.id}}' class='btn btn-primary addToCartButton'>Add To Cart</button>";
+                }
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCartItem(cart);
+        }
+
+        $('.divpr').on("click", "button.minusButton", function() {
+            var idStr = this.id.slice(3,);
+            cart[idStr] = Math.max(0,parseInt(cart[idStr])-1);
+            var qtyId = "qty"+idStr;
+            document.getElementById(qtyId).innerHTML = cart[idStr];
+            updateCart(cart);
+            updateCart(cart);
+        });
+
+        $('.divpr').on("click", "button.plusButton", function() {
+            var idStr = this.id.slice(3,);
+            cart[idStr] = parseInt(cart[idStr])+1;
+            var qtyId = "qty"+idStr;
+            document.getElementById(qtyId).innerHTML = cart[idStr];
+            updateCart(cart);
+        });
+
+        function updateCartItem(cart){
+            var total = 0;
+            for(var i=0;i<Object.keys(cart).length;i++){
+                total = total + Object.values(cart)[i];
+            }
+            document.getElementById("cartItems").innerHTML = total;
+            updateQuantity();
+        }
+
+        $('#cartPopOver').popover();
+
+        function updateQuantity(){
+            document.getElementById("quantity").innerHTML = cart["pr"+{{selectedProduct.id}}];
+        }
+</script>
+{% endblock %}

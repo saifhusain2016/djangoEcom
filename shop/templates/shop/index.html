@@ -35,13 +35,10 @@ body .no-padding{
     padding-right:20px;
 }
 
-.card{
-padding-left: 37px;
-}
-
 .btn-info{
 padding-left:17px;
 }
+
 
 
 </style>
@@ -65,21 +62,23 @@ padding-left:17px;
                 <div class="carousel-item active">
                     {% for p in data %}
                     <div class="col-xs-3 col-sm-3 col-md-3">
-                        <div class="card" style="width: 18rem;">
+                        <div class="card align-items-center" style="width: 18rem;">
                             <img src='/media/{{p.image}}' class="card-img-top" alt="...">
                             <div class="card-body">
                                 <h5 class="card-title">{{ p.productName}}</h5>
                                 <p class="card-text">{{p.description|slice:"0:20"}}...</p><br>
                                 <p class="card-text">{{p.price}}.00 INR</p>
-                                <button id="pr{{p.id}}" class="btn btn-primary addToCartButton">Add To Cart</button>
+                                <span id="divpr{{p.id}}" class="divpr">
+                                    <button id="pr{{p.id}}" class="btn btn-primary addToCartButton">Add To Cart</button>
+                                </span>
                                 <br>
                                 <a href="/shop/products/{{p.id}}">
-                                <button id="qv{{p.id}}" class="btn btn-info cart my-2">Quick View</button>
+                                    <button id="qv{{p.id}}" class="btn btn-info cart my-2 quickViewButton">Quick View</button>
                                 </a>
                             </div>
                         </div>
                     </div>
-                {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
                 </div>
                 <div class="carousel-item">
                     {% endif %}
@@ -102,3 +101,82 @@ padding-left:17px;
     {% endblock %}
 
 </div>
+
+{% block js%}
+
+<script>
+        if(localStorage.getItem("cart")==null){
+            var cart = {};
+        }
+        else{
+            var key = "cart";
+            var obj = localStorage.getItem(key);
+            cart = JSON.parse(obj);
+            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
+            updateCart(cart);
+        }
+
+        $('.divpr').on("click", "button.addToCartButton", function() {
+            var idstr = this.id.toString();
+            if(cart[idstr] && cart[idstr]!=undefined){
+                cart[idstr]=cart[idstr]+1;
+            }
+            else{
+                cart[idstr]=1;
+            }
+            document.getElementById("cartItems").innerHTML = 1 + parseInt(document.getElementById("cartItems").innerHTML);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCart(cart);
+        });
+
+        $(".quickViewButton").click(function(){
+            var qtyId = this.id.slice(2,);
+            var p = JSON.parse(localStorage.getItem('cart'));
+            var qty = p["pr{{ selectedProduct.id }}"];
+            if(qty!=undefined)
+            document.getElementById("quantity").innerHTML = qty;
+        });
+
+        function updateCart(cart){
+            for(var item in cart){
+                var itemId = "div"+item;
+                if(cart[item]!="0"){
+                    document.getElementById(itemId).innerHTML = "<button id='val"+item+"' class='btn btn-primary minusButton'>-</button><b> <span id='qty"+item+"' >" + cart[item] + "</span> </b><button id='val"+item+"' class='btn btn-primary plusButton'>+</button>";
+                }
+                else{
+                    document.getElementById(itemId).innerHTML = "<button id="+item+" class='btn btn-primary addToCartButton'>Add To Cart</button>";
+                }
+            }
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCartItem(cart);
+        }
+
+        $('.divpr').on("click", "button.minusButton", function() {
+            var idStr = this.id.slice(3,);
+            cart[idStr] = Math.max(0,parseInt(cart[idStr])-1);
+            var qtyId = "qty"+idStr;
+            document.getElementById(qtyId).innerHTML = cart[idStr];
+            updateCart(cart);
+        });
+
+        $('.divpr').on("click", "button.plusButton", function() {
+            var idStr = this.id.slice(3,);
+            cart[idStr] = parseInt(cart[idStr])+1;
+            var qtyId = "qty"+idStr;
+            document.getElementById(qtyId).innerHTML = cart[idStr];
+            updateCart(cart);
+        });
+
+        function updateCartItem(cart){
+            var total = 0;
+            console.log("before for loop");
+            for(var i=0;i<Object.keys(cart).length;i++){
+                total = total + Object.values(cart)[i];
+            }
+            document.getElementById("cartItems").innerHTML = total;
+        }
+        $('#cartPopOver').popover();
+</script>
+
+
+{% endblock %}

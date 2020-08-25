@@ -61,42 +61,6 @@
         crossorigin="anonymous"></script>
 
 {% block js %}
-<script>
-        if(localStorage.getItem("cart")==null){
-            var cart = {};
-        }
-        else{
-            var key = "cart";
-            var obj = localStorage.getItem(key);
-            cart = JSON.parse(obj);
-            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
-        }
-
-        $(".addToCartButton").click(function(){
-            var idstr = this.id.toString();
-            if(cart[idstr] && cart[idstr]!=undefined){
-                cart[idstr]=cart[idstr]+1;
-            }
-            else{
-                cart[idstr]=1;
-            }
-            localStorage.setItem("cart", JSON.stringify(cart));
-            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
-
-            var p = JSON.parse(localStorage.getItem('cart'));
-            var qty = p["pr{{selectedProduct.id }}"];
-            if(qty!=undefined)
-            document.getElementById("quantity").innerHTML = qty;
-        });
-
-        var p = JSON.parse(localStorage.getItem('cart'));
-        var qty = p["pr{{selectedProduct.id }}"];
-        if(qty!=undefined)
-        document.getElementById("quantity").innerHTML = qty;
-
-        $('#cartPopOver').popover();
-
-</script>
 {% endblock %}
 
 </body>
