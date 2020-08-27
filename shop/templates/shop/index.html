@@ -125,6 +125,7 @@ padding-left:17px;
             for(var item in cart){
                 var productName = document.getElementById("name"+item).innerHTML;
                 var qty = cart[item];
+                if(qty=="0") continue;
                 popOverContent = popOverContent + "<div class='row'>";
                 popOverContent = popOverContent + "<div class='col-md-6'>"+i+". "+productName+"</div>";
                 popOverContent = popOverContent + "<div class='col-md-6'> (Qty "+qty+")</div>";
