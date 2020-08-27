@@ -65,7 +65,7 @@ padding-left:17px;
                         <div class="card align-items-center" style="width: 18rem;">
                             <img src='/media/{{p.image}}' class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title">{{ p.productName}}</h5>
+                                <h5 class="card-title" id="namepr{{p.id}}">{{ p.productName}}</h5>
                                 <p class="card-text">{{p.description|slice:"0:20"}}...</p><br>
                                 <p class="card-text">{{p.price}}.00 INR</p>
                                 <span id="divpr{{p.id}}" class="divpr">
@@ -116,6 +116,26 @@ padding-left:17px;
             updateCart(cart);
         }
 
+        $('#cartPopOver').popover();
+        updateCartPopOver(cart);
+
+        function updateCartPopOver(cart){
+            popOverContent = "<h5>Cart For Your Items In My Shopping Cart</h5> <div> <br>";
+            var i = 1;
+            for(var item in cart){
+                var productName = document.getElementById("name"+item).innerHTML;
+                var qty = cart[item];
+                popOverContent = popOverContent + "<div class='row'>";
+                popOverContent = popOverContent + "<div class='col-md-6'>"+i+". "+productName+"</div>";
+                popOverContent = popOverContent + "<div class='col-md-6'> (Qty "+qty+")</div>";
+                popOverContent = popOverContent + "</div>";
+                i = i+1;
+            }
+            popOverContent  = popOverContent + "</ol></div>";
+            document.getElementById("cartPopOver").setAttribute('data-content', popOverContent);
+            $('#cartPopOver').popover('show');
+        }
+
         $('.divpr').on("click", "button.addToCartButton", function() {
             var idstr = this.id.toString();
             if(cart[idstr] && cart[idstr]!=undefined){
@@ -149,6 +169,7 @@ padding-left:17px;
             }
             localStorage.setItem("cart", JSON.stringify(cart));
             updateCartItem(cart);
+            updateCartPopOver(cart);
         }
 
         $('.divpr').on("click", "button.minusButton", function() {
@@ -169,13 +190,11 @@ padding-left:17px;
 
         function updateCartItem(cart){
             var total = 0;
-            console.log("before for loop");
             for(var i=0;i<Object.keys(cart).length;i++){
                 total = total + Object.values(cart)[i];
             }
             document.getElementById("cartItems").innerHTML = total;
         }
-        $('#cartPopOver').popover();
 </script>
 
 

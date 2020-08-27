@@ -33,7 +33,6 @@
             var cart = {};
         }
         else{
-            console.log("cart already present");
             var key = "cart";
             var obj = localStorage.getItem(key);
             cart = JSON.parse(obj);
@@ -41,7 +40,6 @@
         }
 
         $('.divpr').on("click", "button.addToCartButton", function() {
-            console.log("clicked on addtocartbutton");
             var idstr = this.id.toString();
             if(cart[idstr] && cart[idstr]!=undefined){
                 cart[idstr]=cart[idstr]+1;
@@ -58,7 +56,6 @@
             item = "pr"+{{ selectedProduct.id }} ;
                 var itemId = "div"+item;
                 if(cart[item]!="0"){
-                    console.log("if passed..");
                     document.getElementById(itemId).innerHTML = "<button id='val"+item+"' class='btn btn-primary minusButton'>-</button><b> <span id='qty"+item+"' >" + cart[item] + "</span> </b><button id='val"+item+"' class='btn btn-primary plusButton'>+</button>";
                 }
                 else{
