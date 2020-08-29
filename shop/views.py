@@ -38,7 +38,8 @@ def search(request):
     return render(request, 'shop/search.html')
 
 def checkout(request):
-    return render(request, 'shop/checkout.html')
+    data = Product.objects.all()
+    return render(request, 'shop/checkout.html', { "products": data })
 
 def home(request):
     return render(request, '')

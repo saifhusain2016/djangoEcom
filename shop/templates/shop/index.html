@@ -1,49 +1,45 @@
 {% extends './basic.html'%}
 {%block css%}
 <style>
-.col-md-3{
+.col-md-3 {
     display: inline-block;
-    margin-left:-4px;
+    margin-left: -4px;
 }
 
-.col-md-3 img{
-    width:170px;
-    height:200px;
+.col-md-3 img {
+    width: 170px;
+    height: 200px;
 }
 
-body .carousel-indicator li{
+body .carousel-indicator li {
     background-color: blue;
 
 }
 
 body .carousel-control-prev-icon,
-body .carousel-control-next-icon{
+body .carousel-control-next-icon {
     background-color: blue;
 }
 
 body .carousel-control-prev,
-body .carousel-control-next{
+body .carousel-control-next {
     width: 20px;
 }
 
-.carousel-item{
+.carousel-item {
     width: 94%;
 }
 
-body .no-padding{
-    padding-left:20px;
-    padding-right:20px;
+body .no-padding {
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
-.btn-info{
-padding-left:17px;
+.btn-info {
+    padding-left: 17px;
 }
-
-
-
 </style>
 {%endblock%}
-
 {%block content%}
 <div class="container">
     {% for data, slides, range in allProducts %}
@@ -56,7 +52,6 @@ padding-left:17px;
                 <li data-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ i }}"></li>
                 {% endfor %}
             </ul>
-
             {% load static %}
             <div class="container carousel-inner no-padding">
                 <div class="carousel-item active">
@@ -86,117 +81,150 @@ padding-left:17px;
                 </div>
             </div>
         </div>
-
         <a class="carousel-control-prev" href="#demo{{ forloop.counter }}" data-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </a>
         <a class="carousel-control-next" href="#demo{{ forloop.counter }}" data-slide="next">
             <span class="carousel-control-next-icon"></span>
         </a>
-
     </div>
-
     <br id="{{forloop.counter}}">
     {% endfor %}
     {% endblock %}
-
 </div>
-
 {% block js%}
-
 <script>
-        if(localStorage.getItem("cart")==null){
-            var cart = {};
+if (localStorage.getItem("cart") == null) {
+    var cart = {};
+} else {
+    var key = "cart";
+    var obj = localStorage.getItem(key);
+    cart = JSON.parse(obj);
+    updateCart(cart);
+
+    if (localStorage.getItem("cart") == "{}") {
+        console.log("cart is null setting disabled");
+        console.log(localStorage.getItem("cart") + "-0000000000000---------");
+        document.getElementById('clearCartButton').disabled = true;
+        document.getElementById('checkoutButton').disabled = true;
+    } else {
+        console.log("cart is not null setting enabled");
+        console.log(localStorage.getItem("cart") + "-0000000000000---------");
+        document.getElementById('clearCartButton').disabled = false;
+        document.getElementById('checkoutButton').disabled = false;
+    }
+}
+
+$('#cartPopOver').popover('hide');
+
+function updateCartPopOver(cart, show) {
+    popOverContent = "<h5>Cart For Your Items In My Shopping Cart</h5> <div> <br>";
+    var i = 1;
+    for (var item in cart) {
+        var productName = document.getElementById("name" + item).innerHTML;
+        var qty = cart[item];
+        if (qty == "0") continue;
+        popOverContent = popOverContent + "<div class='row'>";
+        popOverContent = popOverContent + "<div class='col-md-6'>" + i + ". " + productName + "</div>";
+        popOverContent = popOverContent + "<div class='col-md-6'> (Qty " + qty + ")</div>";
+        popOverContent = popOverContent + "</div>";
+        i = i + 1;
+    }
+    popOverContent = popOverContent + "</ol></div>";
+
+    var clearCartButton = "<button class='btn btn-primary mx-1 my-2' id='clearCartButton' onclick='clearCart()' >Clear Cart</button>";
+    var CheckoutButton = "<a href='/shop/checkout'><button class='btn btn-primary mx-1 my-2' id='checkoutButton'>Checkout</button></a>";
+
+    popOverContent = popOverContent + "<div class='row'><div class='col-md-12'>";
+    popOverContent = popOverContent + CheckoutButton + clearCartButton;
+    popOverContent = popOverContent + "</div></div>";
+
+    document.getElementById("cartPopOver").setAttribute('data-content', popOverContent);
+    $('#cartPopOver').popover('show');
+}
+
+function clearCart() {
+    console.log("in clear cart function");
+    for (var item in cart) {
+        console.log(item);
+        document.getElementById("div" + item).innerHTML = "<button id='" + item + "' class='btn btn-primary addToCartButton'>Add To Cart</button>";
+    }
+    localStorage.clear();
+    cart = {};
+    updateCart(cart);
+}
+
+$('.divpr').on("click", "button.addToCartButton", function() {
+    var idstr = this.id.toString();
+    if (cart[idstr] && cart[idstr] != undefined) {
+        cart[idstr] = cart[idstr] + 1;
+    } else {
+        cart[idstr] = 1;
+    }
+    document.getElementById("cartItems").innerHTML = 1 + parseInt(document.getElementById("cartItems").innerHTML);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCart(cart);
+});
+
+$(".quickViewButton").click(function() {
+    var qtyId = this.id.slice(2, );
+    var p = JSON.parse(localStorage.getItem('cart'));
+    var qty = p["pr{{ selectedProduct.id }}"];
+    if (qty != undefined)
+        document.getElementById("quantity").innerHTML = qty;
+});
+
+function updateCart(cart) {
+    for (var item in cart) {
+        var itemId = "div" + item;
+        if (cart[item] != null && cart[item] != "0") {
+            document.getElementById(itemId).innerHTML = "<button id='val" + item + "' class='btn btn-primary minusButton'>-</button><b> <span id='qty" + item + "' >" + cart[item] + "</span> </b><button id='val" + item + "' class='btn btn-primary plusButton'>+</button>";
+        } else {
+            document.getElementById(itemId).innerHTML = "<button id=" + item + " class='btn btn-primary addToCartButton'>Add To Cart</button>";
         }
-        else{
-            var key = "cart";
-            var obj = localStorage.getItem(key);
-            cart = JSON.parse(obj);
-            document.getElementById("cartItems").innerHTML = Object.keys(cart).length;
-            updateCart(cart);
-        }
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartItem(cart);
+    updateCartPopOver(cart, false);
 
-        $('#cartPopOver').popover();
-        updateCartPopOver(cart);
+    if (localStorage.getItem("cart") == "{}") {
 
-        function updateCartPopOver(cart){
-            popOverContent = "<h5>Cart For Your Items In My Shopping Cart</h5> <div> <br>";
-            var i = 1;
-            for(var item in cart){
-                var productName = document.getElementById("name"+item).innerHTML;
-                var qty = cart[item];
-                if(qty=="0") continue;
-                popOverContent = popOverContent + "<div class='row'>";
-                popOverContent = popOverContent + "<div class='col-md-6'>"+i+". "+productName+"</div>";
-                popOverContent = popOverContent + "<div class='col-md-6'> (Qty "+qty+")</div>";
-                popOverContent = popOverContent + "</div>";
-                i = i+1;
-            }
-            popOverContent  = popOverContent + "</ol></div>";
-            document.getElementById("cartPopOver").setAttribute('data-content', popOverContent);
-            $('#cartPopOver').popover('show');
-        }
+        console.log("cart is null setting disabled");
+        console.log(localStorage.getItem("cart") + "-0000000000000---------");
+        document.getElementById('clearCartButton').disabled = true;
+        document.getElementById('checkoutButton').disabled = true;
+    } else {
 
-        $('.divpr').on("click", "button.addToCartButton", function() {
-            var idstr = this.id.toString();
-            if(cart[idstr] && cart[idstr]!=undefined){
-                cart[idstr]=cart[idstr]+1;
-            }
-            else{
-                cart[idstr]=1;
-            }
-            document.getElementById("cartItems").innerHTML = 1 + parseInt(document.getElementById("cartItems").innerHTML);
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCart(cart);
-        });
+        console.log("cart is not null setting enabled");
+        console.log(localStorage.getItem("cart") + "-0000000000000---------");
+        document.getElementById('clearCartButton').disabled = false;
+        document.getElementById('checkoutButton').disabled = false;
+    }
 
-        $(".quickViewButton").click(function(){
-            var qtyId = this.id.slice(2,);
-            var p = JSON.parse(localStorage.getItem('cart'));
-            var qty = p["pr{{ selectedProduct.id }}"];
-            if(qty!=undefined)
-            document.getElementById("quantity").innerHTML = qty;
-        });
+}
 
-        function updateCart(cart){
-            for(var item in cart){
-                var itemId = "div"+item;
-                if(cart[item]!="0"){
-                    document.getElementById(itemId).innerHTML = "<button id='val"+item+"' class='btn btn-primary minusButton'>-</button><b> <span id='qty"+item+"' >" + cart[item] + "</span> </b><button id='val"+item+"' class='btn btn-primary plusButton'>+</button>";
-                }
-                else{
-                    document.getElementById(itemId).innerHTML = "<button id="+item+" class='btn btn-primary addToCartButton'>Add To Cart</button>";
-                }
-            }
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCartItem(cart);
-            updateCartPopOver(cart);
-        }
+$('.divpr').on("click", "button.minusButton", function() {
+    var idStr = this.id.slice(3, );
+    cart[idStr] = Math.max(0, parseInt(cart[idStr]) - 1);
+    var qtyId = "qty" + idStr;
+    document.getElementById(qtyId).innerHTML = cart[idStr];
+    updateCart(cart);
+});
 
-        $('.divpr').on("click", "button.minusButton", function() {
-            var idStr = this.id.slice(3,);
-            cart[idStr] = Math.max(0,parseInt(cart[idStr])-1);
-            var qtyId = "qty"+idStr;
-            document.getElementById(qtyId).innerHTML = cart[idStr];
-            updateCart(cart);
-        });
+$('.divpr').on("click", "button.plusButton", function() {
+    var idStr = this.id.slice(3, );
+    cart[idStr] = parseInt(cart[idStr]) + 1;
+    var qtyId = "qty" + idStr;
+    document.getElementById(qtyId).innerHTML = cart[idStr];
+    updateCart(cart);
+});
 
-        $('.divpr').on("click", "button.plusButton", function() {
-            var idStr = this.id.slice(3,);
-            cart[idStr] = parseInt(cart[idStr])+1;
-            var qtyId = "qty"+idStr;
-            document.getElementById(qtyId).innerHTML = cart[idStr];
-            updateCart(cart);
-        });
-
-        function updateCartItem(cart){
-            var total = 0;
-            for(var i=0;i<Object.keys(cart).length;i++){
-                total = total + Object.values(cart)[i];
-            }
-            document.getElementById("cartItems").innerHTML = total;
-        }
+function updateCartItem(cart) {
+    var total = 0;
+    for (var i = 0; i < Object.keys(cart).length; i++) {
+        total = total + Object.values(cart)[i];
+    }
+    document.getElementById("cartItems").innerHTML = total;
+}
 </script>
-
-
 {% endblock %}

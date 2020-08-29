@@ -1,9 +1,6 @@
 {% extends './basic.html' %}
-
 {%block title%}About us page{%endblock%}
-
 {% block content%}
-
 <div class="container my-5">
     <div class="row">
         <div class="col-md-4">
@@ -13,7 +10,7 @@
             <div class="row">
                 <button class="btn btn-primary mx-3">Buy Now</button>
                 <span id="divpr{{selectedProduct.id}}" class="divpr">
-                     <button id="pr{{selectedProduct.id}}" class="btn btn-primary addToCartButton">Add To Cart</button>
+                    <button id="pr{{selectedProduct.id}}" class="btn btn-primary addToCartButton">Add To Cart</button>
                 </span>
             </div>
         </div>
@@ -26,75 +23,71 @@
     </div>
 </div>
 {%endblock%}
-
 {%block js%}
 <script>
-        if(localStorage.getItem("cart")==null){
-            var cart = {};
-        }
-        else{
-            var key = "cart";
-            var obj = localStorage.getItem(key);
-            cart = JSON.parse(obj);
-            updateCart(cart);
-        }
+if (localStorage.getItem("cart") == null) {
+    var cart = {};
+} else {
+    var key = "cart";
+    var obj = localStorage.getItem(key);
+    cart = JSON.parse(obj);
+    updateCart(cart);
+}
 
-        $('.divpr').on("click", "button.addToCartButton", function() {
-            var idstr = this.id.toString();
-            if(cart[idstr] && cart[idstr]!=undefined){
-                cart[idstr]=cart[idstr]+1;
-            }
-            else{
-                cart[idstr]=1;
-            }
-            document.getElementById("cartItems").innerHTML = 1 + parseInt(document.getElementById("cartItems").innerHTML);
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCart(cart);
-        });
+$('.divpr').on("click", "button.addToCartButton", function() {
+    var idstr = this.id.toString();
+    if (cart[idstr] && cart[idstr] != undefined) {
+        cart[idstr] = cart[idstr] + 1;
+    } else {
+        cart[idstr] = 1;
+    }
+    document.getElementById("cartItems").innerHTML = 1 + parseInt(document.getElementById("cartItems").innerHTML);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCart(cart);
+});
 
-        function updateCart(cart){
-            item = "pr"+{{ selectedProduct.id }} ;
-                var itemId = "div"+item;
-                if(cart[item]!="0"){
-                    document.getElementById(itemId).innerHTML = "<button id='val"+item+"' class='btn btn-primary minusButton'>-</button><b> <span id='qty"+item+"' >" + cart[item] + "</span> </b><button id='val"+item+"' class='btn btn-primary plusButton'>+</button>";
-                }
-                else{
-                    document.getElementById(itemId).innerHTML = "<button id='pr{{selectedProduct.id}}' class='btn btn-primary addToCartButton'>Add To Cart</button>";
-                }
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCartItem(cart);
-        }
+function updateCart(cart) {
+    item = "pr" + { { selectedProduct.id } };
+    var itemId = "div" + item;
+    if (cart[item] != "0") {
+        document.getElementById(itemId).innerHTML = "<button id='val" + item + "' class='btn btn-primary minusButton'>-</button><b> <span id='qty" + item + "' >" + cart[item] + "</span> </b><button id='val" + item + "' class='btn btn-primary plusButton'>+</button>";
+    } else {
+        document.getElementById(itemId).innerHTML = "<button id='pr{{selectedProduct.id}}' class='btn btn-primary addToCartButton'>Add To Cart</button>";
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartItem(cart);
+}
 
-        $('.divpr').on("click", "button.minusButton", function() {
-            var idStr = this.id.slice(3,);
-            cart[idStr] = Math.max(0,parseInt(cart[idStr])-1);
-            var qtyId = "qty"+idStr;
-            document.getElementById(qtyId).innerHTML = cart[idStr];
-            updateCart(cart);
-            updateCart(cart);
-        });
+$('.divpr').on("click", "button.minusButton", function() {
+    var idStr = this.id.slice(3, );
+    cart[idStr] = Math.max(0, parseInt(cart[idStr]) - 1);
+    var qtyId = "qty" + idStr;
+    document.getElementById(qtyId).innerHTML = cart[idStr];
+    updateCart(cart);
+    updateCart(cart);
+});
 
-        $('.divpr').on("click", "button.plusButton", function() {
-            var idStr = this.id.slice(3,);
-            cart[idStr] = parseInt(cart[idStr])+1;
-            var qtyId = "qty"+idStr;
-            document.getElementById(qtyId).innerHTML = cart[idStr];
-            updateCart(cart);
-        });
+$('.divpr').on("click", "button.plusButton", function() {
+    var idStr = this.id.slice(3, );
+    cart[idStr] = parseInt(cart[idStr]) + 1;
+    var qtyId = "qty" + idStr;
+    document.getElementById(qtyId).innerHTML = cart[idStr];
+    updateCart(cart);
+});
 
-        function updateCartItem(cart){
-            var total = 0;
-            for(var i=0;i<Object.keys(cart).length;i++){
-                total = total + Object.values(cart)[i];
-            }
-            document.getElementById("cartItems").innerHTML = total;
-            updateQuantity();
-        }
+function updateCartItem(cart) {
+    var total = 0;
+    for (var i = 0; i < Object.keys(cart).length; i++) {
+        total = total + Object.values(cart)[i];
+    }
+    document.getElementById("cartItems").innerHTML = total;
+    updateQuantity();
+}
 
-        $('#cartPopOver').popover();
+$('#cartPopOver').popover();
 
-        function updateQuantity(){
-            document.getElementById("quantity").innerHTML = cart["pr"+{{selectedProduct.id}}];
-        }
+function updateQuantity() {
+    document.getElementById("quantity").innerHTML = cart["pr" + { { selectedProduct.id } }];
+}
 </script>
 {% endblock %}
