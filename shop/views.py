@@ -1,6 +1,9 @@
-from django.shortcuts import render
-from .models import Product, Contact, Order
+from django.shortcuts import render, HttpResponse 
+from .models import Product, Contact, Order, OrderUpdate
 from math import ceil
+import json
+import datetime
+import time
 
 def index(request):
     data = Product.objects.all()
@@ -28,6 +31,22 @@ def contactus(request):
     return render(request, 'shop/contactUs.html')
 
 def tracker(request):
+    if request.method == "POST":
+        order_Id = request.POST.get('orderId')
+        email = request.POST.get('email')
+        order = Order.objects.filter(order_id=order_Id, email=email)
+        try:
+            if len(order)>0:
+                update = OrderUpdate.objects.filter(order_id=order_Id)
+                updates = []
+                for item in update:
+                    updates.append({"text":item.update_desc, "time": str(item.timeStamp)})
+                response = json.dumps(updates)
+                return HttpResponse(response)
+            else:
+                return HttpResponse("Order Not Found")
+        except Exception as e:
+            return HttpResponse(f'Exception')
     return render(request, 'shop/tracker.html')
 
 def productview(request, myId):
@@ -53,6 +72,10 @@ def checkout(request):
         print("item infor is"+item_info)
         if item_info:
             order.save()
+            orderId = order.order_id
+            updateDescription = "Your Order has been placed"
+            orderUpdate = OrderUpdate(order_id=orderId, update_desc=updateDescription)
+            orderUpdate.save()
             return render(request, 'shop/checkout.html', {"products":data, "thank":True, "id":order.order_id})
     return render(request, 'shop/checkout.html', {"products":data, "thank":False, "id":"0"})
 

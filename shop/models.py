@@ -35,3 +35,12 @@ class Order(models.Model):
     state = models.CharField(max_length=50)
     zip_code = models.CharField(max_length=50)
     phone = models.CharField(max_length=50)
+
+class OrderUpdate(models.Model):
+    update_id = models.AutoField(primary_key=True)
+    order_id = models.CharField(max_length=20)
+    update_desc = models.CharField(max_length=500)
+    timeStamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.update_desc[0:30] + "..."

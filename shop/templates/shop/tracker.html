@@ -1,5 +1,81 @@
-{% extends './basic.html' %}
-{%block title%}About us page{%endblock%}
-{% block content%}
-<h1> Tracker Page </h1>
+{% extends './basic.html'%}
+{%block title%}Tracker Page {%endblock%}
+{%block css%}
+<style>
+    .list-group{
+  padding-left:165px;
+  padding-right:165px;
+  border-radius:1.25rem;
+}
+
+</style>
+{% endblock %}
+{%block content%}
+{% load static %}
+<div class="container my-4">
+    <div id="trackerDiv" class="col my-5">
+        <center>
+            <h4>Please Enter Order Details to Track Order</h4>
+        </center>
+        <form method='post' action='#' class="trackerForm" id="trackerForm">
+            {% csrf_token %}
+            <input type='hidden' id='itemInfo' name='item_info' required></input>
+            <div class="form-row my-3">
+                <div class="form-group col-md-6">
+                    <label for="inputOrderId">Order Id</label>
+                    <input type="text" class="form-control" id="inputOrderId" name="orderId" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputEmail">Email</label>
+                    <input type="email" class="form-control" id="inputEmail" name="email" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary my-2" id="trackOrderButton">Track Order</button>
+        </form>
+        <center>
+            <h4>Order Tracking Details</h4>
+        </center>
+        <div id="orderUpdateListDiv" class="col my-5">
+            <ul class="list-group" id="orderUpdateList"></ul>
+        </div>
+    </div>
+</div>
 {%endblock%}
+{% block js %}
+<script>
+$("#trackerForm").submit(function(event) {
+    
+    $("#orderUpdateList").empty();
+
+    var formData = {
+        'orderId': $("input[name='orderId']").val(),
+        'email': $("input[name='email']").val(),
+        'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+    };
+
+    $.ajax({
+        type: 'POST',
+        url: '/shop/tracker/',
+        data: formData,
+        encode: true,
+    })
+
+    .done(function(data){
+        console.log(data);
+        updates = JSON.parse(data);
+        console.log(updates.length);
+        for(var i=0;i<updates.length;i++){
+            let text = updates[i]['text'];
+            let time = updates[i]['time']; 
+            newUpdate = `<li class="list-group-item d-flex justify-content-between align-items-center"><span class="badge badge-success  badge-pill">${text}</span><i style='font-size:24px' class='far mx-2'>&#xf017;</i><span class="badge badge-info badge-pill">  ${time}</span> </li>`;
+            $("#orderUpdateList").append(newUpdate);
+        }
+    });
+
+
+    event.preventDefault();
+
+
+})
+</script>
+{% endblock %}
