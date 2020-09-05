@@ -6,6 +6,7 @@
   padding-right:165px;
   border-radius:1.25rem;
 }
+
 </style>
 {% endblock %}
 {%block content%}
@@ -22,48 +23,50 @@
     </div>
     <div id="checkoutAddress" class="col my-4">
         <h4>Step1: Please Enter your shipping address</h4>
-        <form>
+        <form method='post' action='/shop/checkout/' class="checkoutForm" id="checkoutForm">
+            {% csrf_token %}
+            <input type='hidden' id='itemInfo' name='item_info' required></input>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputName">Name</label>
-                    <input type="text" class="form-control" id="inputName">
+                    <input type="text" class="form-control" id="inputName" name="name" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputEmail">Email</label>
-                    <input type="email" class="form-control" id="inputEmail">
+                    <input type="email" class="form-control" id="inputEmail" name="email" required>
                 </div>
             </div>
             <div class="form-group">
                 <label for="inputAddress">Address</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="Please Enter your Address Here">
+                <input type="text" class="form-control" id="inputAddress" placeholder="Please Enter your Address Here" name="address" required>
             </div>
             <div class="form-group">
                 <label for="inputAddress2">Address 2</label>
-                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" name="address2" required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputCity">City</label>
-                    <input type="text" class="form-control" id="inputCity">
+                    <input type="text" class="form-control" id="inputCity" name="city" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputState">State</label>
-                    <input type="text" class="form-control" id="inputState">
+                    <input type="text" class="form-control" id="inputState" name="state" required>
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputPhone">Phone</label>
-                    <input type="text" class="form-control" id="inputPhone">
+                    <input type="text" class="form-control" id="inputPhone" name="phone" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="inputZip">Zip</label>
-                    <input type="text" class="form-control" id="inputZip">
+                    <input type="text" class="form-control" id="inputZip" name="zip_code" required>
                 </div>
             </div>
+            <button type="submit" class="btn btn-primary my-2 mx-3" id="placeOrderButton">Place Order</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary my-2 mx-3">Place Order</button>
-    </form>
 </div>
 </div>
 {%endblock%}
@@ -72,10 +75,12 @@
 cart = JSON.parse(localStorage.getItem('cart'));
 var i = 0;
 var listItems = "";
-var total = 0; {% for p in products %}
+var total = 0;
+var item_info = [];
+{% for p in products %}
 var id = "pr{{p.id}}";
 var listItem = "";
-if (cart[id] != undefined) {
+if (cart != null && cart[id] != undefined) {
     var name = "{{p.productName}}";
     var qty = cart[id];
     var price = "{{p.price}}";
@@ -85,11 +90,23 @@ if (cart[id] != undefined) {
     listItem = listItem + "<span class='badge badge-warning badge-pill'> Qty. " + qty + "</span>";
     listItem = listItem + "</li>";
     total = total + qty;
+    var x = { 'name': '{{p}}', 'price': '{{p.price}}', 'quantity': qty };
+    item_info.push(x);
 }
-listItems = listItems + listItem; {% endfor %}
+
+listItems = listItems + listItem;
+{% endfor %}
+$('#itemInfo').val(JSON.stringify(item_info));
+
+{% if thank %}
+alert("Thanks for submitting order. Your Order Id Is {{ id }}");
+localStorage.clear();
+document.getElementById("checkoutForm").reset();
+cart = {};
+document.location = "/shop"; 
+{% endif %}
 
 if (listItems) {
-
     document.getElementById('checkoutCartList').innerHTML = listItems;
     document.getElementById('cartItems').innerHTML = total;
 }

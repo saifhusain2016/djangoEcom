@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Product, Contact
+from .models import Product, Contact, Order
 from math import ceil
 
 def index(request):
@@ -39,7 +39,22 @@ def search(request):
 
 def checkout(request):
     data = Product.objects.all()
-    return render(request, 'shop/checkout.html', { "products": data })
+    if request.method == "POST":
+        item_info = request.POST.get('item_info')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        address = request.POST.get('address')
+        address2 = request.POST.get('address2')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        zip_code = request.POST.get('zip_code')
+        phone = request.POST.get('phone')
+        order = Order(item_info=item_info, name=name, phone=phone, email=email, address=address, address2=address2, city=city, state=state, zip_code=zip_code)
+        print("item infor is"+item_info)
+        if item_info:
+            order.save()
+            return render(request, 'shop/checkout.html', {"products":data, "thank":True, "id":order.order_id})
+    return render(request, 'shop/checkout.html', {"products":data, "thank":False, "id":"0"})
 
 def home(request):
     return render(request, '')
