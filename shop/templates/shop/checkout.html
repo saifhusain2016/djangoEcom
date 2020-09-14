@@ -21,6 +21,9 @@
             </li>
         </ul>
     </div>
+    <center>
+        <div id="totalCartValue" class="my-4"></div>
+    </center>
     <div id="checkoutAddress" class="col my-4">
         <h4>Step1: Please Enter your shipping address</h4>
         <form method='post' action='/shop/checkout/' class="checkoutForm" id="checkoutForm">
@@ -77,13 +80,18 @@ var i = 0;
 var listItems = "";
 var total = 0;
 var item_info = [];
+var totalPrice = 0;
+
 {% for p in products %}
 var id = "pr{{p.id}}";
 var listItem = "";
+
 if (cart != null && cart[id] != undefined) {
     var name = "{{p.productName}}";
     var qty = cart[id];
     var price = "{{p.price}}";
+    totalPrice += parseFloat(price) * parseInt(qty);
+    console.log(price + " : " + totalPrice);
     listItem = "<li class='list-group-item list-group-item-secondary d-flex justify-content-between align-items-center'>";
     listItem = listItem + "<span class='badge badge-secondary badge-pill'> Name. " + name + "</span>";
     listItem = listItem + "<span class='badge badge-info badge-pill'> Price. &#8377; " + price + "  per unit</span>";
@@ -94,8 +102,7 @@ if (cart != null && cart[id] != undefined) {
     item_info.push(x);
 }
 
-listItems = listItems + listItem;
-{% endfor %}
+listItems = listItems + listItem; {% endfor %}
 $('#itemInfo').val(JSON.stringify(item_info));
 
 {% if thank %}
@@ -103,12 +110,15 @@ alert("Thanks for submitting order. Your Order Id Is {{ id }}");
 localStorage.clear();
 document.getElementById("checkoutForm").reset();
 cart = {};
-document.location = "/shop"; 
-{% endif %}
+document.location = "/shop"; {% endif %}
 
 if (listItems) {
     document.getElementById('checkoutCartList').innerHTML = listItems;
     document.getElementById('cartItems').innerHTML = total;
 }
+
+
+
+document.getElementById("totalCartValue").innerHTML = "<button class='badge badge-success'> Total Price. &#8377; " + totalPrice + "  </button>";
 </script>
 {% endblock %}
