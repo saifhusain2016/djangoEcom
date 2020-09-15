@@ -39,9 +39,10 @@ def tracker(request):
             if len(order)>0:
                 update = OrderUpdate.objects.filter(order_id=order_Id)
                 updates = []
+                item_info = order[0].item_info;
                 for item in update:
                     updates.append({"text":item.update_desc, "time": str(item.timeStamp)})
-                response = json.dumps(updates)
+                response = json.dumps([updates, item_info], default=str)
                 return HttpResponse(response)
             else:
                 return HttpResponse("Order Not Found")

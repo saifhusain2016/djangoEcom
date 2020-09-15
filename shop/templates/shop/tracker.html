@@ -38,6 +38,12 @@
         <div id="orderUpdateListDiv" class="col my-5">
             <ul class="list-group" id="orderUpdateList"></ul>
         </div>
+        <center>
+            <h4>Order Details</h4>
+        </center>
+        <div id="orderDetailsListDiv" class="col my-5">
+            <ul class="list-group" id="orderDetailsList"></ul>
+        </div>
     </div>
 </div>
 {%endblock%}
@@ -61,8 +67,8 @@ $("#trackerForm").submit(function(event) {
     })
 
     .done(function(data){
-        console.log(data);
-        updates = JSON.parse(data);
+        data = JSON.parse(data);
+        updates = data[0];
         console.log(updates.length);
         for(var i=0;i<updates.length;i++){
             let text = updates[i]['text'];
@@ -70,7 +76,22 @@ $("#trackerForm").submit(function(event) {
             newUpdate = `<li class="list-group-item d-flex justify-content-between align-items-center"><span class="badge badge-success  badge-pill">${text}</span><i style='font-size:24px' class='far mx-2'>&#xf017;</i><span class="badge badge-info badge-pill">  ${time}</span> </li>`;
             $("#orderUpdateList").append(newUpdate);
         }
+
+        var cart = JSON.parse(data[1]);
+        console.log(cart.length);
+        console.log(updates);
+        console.log(cart);
+        for(var i=0;i<cart.length;i++){
+            let name = cart[i]['name'];
+            let price = cart[i]['price']; 
+            let qty = cart[i]['quantity'];
+            newUpdate = `<li class="list-group-item d-flex justify-content-between align-items-center"><span class="badge badge-danger  badge-pill">${name}</span><span class="badge badge-primary badge-primary">&#8377;  ${price} per unit </span> <span class="badge badge-warning badge-warning">  Qty. ${qty}  </span></li>`;
+            $("#orderDetailsList").append(newUpdate);
+        }
+
     });
+
+
 
 
     event.preventDefault();
