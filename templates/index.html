@@ -1,16 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends './basic.html'%}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Home page</title>
-</head>
+{%block css%}
+<style>
+    .list-group{
+  padding-left:465px;
+  padding-right:465px;
+}
 
-<body>
-    <h1>Home Page</h1>
-    <a href="./blog">Blog</a><br>
-    <a href="./shop">Shop</a><br>
-    <a href="./admin">Admin</a><br>
-</body>
+</style>
+{% endblock %}
 
-</html>
+{%block content%}
+
+<div class="my-4"><center><h1>Home Page</h1>
+<ul class="list-group">
+  <li class="list-group-item list-group-item-info my-4"><h4><a href="./blog">Blog</a></h4></li>
+  <li class="list-group-item list-group-item-light my-4"><h4><a href="./shop">Shop</a></h4></li>
+    <li class="list-group-item list-group-item-dark my-4"><h4><a href="./admin">Admin</a></h4></li>
+</ul>
+    </center>
+</div>
+{%endblock%}
