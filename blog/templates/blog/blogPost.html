@@ -8,7 +8,7 @@
             </h3>
             <div class="blog-post">
                 <p class="blog-post-meta">{{ blogData.pub_date }}</a></p>
-
+                <div class="fb-like" data-href="http://127.0.0.1:8000/blog/blogpost/{{blogData.post_id}}" data-width="" data-layout="button_count" data-action="like" data-size="small" data-share="true"></div>
                 <h2 class="blog-post-title"> {{ blogData.head_0 }} </h2>
                 {% load static %}
                 <img width="250" height="200" src="/media/{{blogData.thumbnail}}" class="mx-2 my-2">
@@ -19,7 +19,7 @@
                 
                 <h3>{{ blogData.head_2 }}</h3>
                 <p>{{ blogData.chead_2 }}</p>
-              
+                <div class="fb-comments" data-href="http://127.0.0.1:8000/blog/blogpost/{{blogData.post_id}}" data-numposts="5" data-width=""></div>
             </div>
             <hr>
             <center>
@@ -37,6 +37,7 @@
             <div class="p-4 mb-3 bg-light rounded">
                 <h4 class="font-italic">About</h4>
                 <p class="mb-0">My Awesome Cart is an amazing website. You can buy many items here. <p>
+                <div class="fb-share-button" data-href="http://127.0.0.1:8000/blog/blogpost/{{blogData.post_id}}" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
             </div>
             <div class="p-4">
                 <h4 class="font-italic">Contact Us On</h4>
