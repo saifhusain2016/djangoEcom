@@ -4,21 +4,34 @@
     <div class="row">
         <div class="col-md-8 blog-main">
             <h3 class="pb-4 mb-4 font-italic border-bottom">
-                From the Firehose
+                {{ blogData.title }}
             </h3>
             <div class="blog-post">
-                <h2 class="blog-post-title"> Post Title </h2>
-                <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
-   
-                <p> Heading 0 content </p>
+                <p class="blog-post-meta">{{ blogData.pub_date }}</a></p>
 
-                <h2>Heading 1</h2>
-                <p> Heading 1 content </p>
+                <h2 class="blog-post-title"> {{ blogData.head_0 }} </h2>
+                {% load static %}
+                <img width="250" height="200" src="/media/{{blogData.thumbnail}}" class="mx-2 my-2">
+                <p> {{ blogData.chead_0 }} </p>
+
+                <h2>{{ blogData.head_1 }}</h2>
+                <p> {{ blogData.chead_1 }} </p>
                 
-                <h3>Heading 2</h3>
-                <p>Heading 2 content</p>
+                <h3>{{ blogData.head_2 }}</h3>
+                <p>{{ blogData.chead_2 }}</p>
               
             </div>
+            <hr>
+            <center>
+            <nav class="blog-pagination my-2">
+                {% if prev %}
+                <a class="btn btn-outline-danger" href="{{prev.post_id}}"><- Prev ({{prev.title}})</a>
+                {% endif %}
+                {% if next %}
+                <a class="btn btn-outline-danger" href="{{next.post_id}}" tabindex="-1" aria-disabled="true">({{next.title}}) Next -></a>
+                {% endif %}
+            </nav>
+                </center>
         </div>
         <aside class="col-md-4 blog-sidebar">
             <div class="p-4 mb-3 bg-light rounded">
